@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aspen Brain – Admin Panel</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">⚡ ASPEN <span>BRAIN</span></div>
+    <p class="login-subtitle">Admin Panel — Secure Access</p>
+
+    <label for="login-password">Password</label>
+    <input type="password" id="login-password" placeholder="Enter admin password" autocomplete="current-password">
+    <div id="login-error"></div>
+
+    <button class="btn-primary" id="login-btn">🔒 Sign In</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════════ -->
+<div id="app" class="hidden">
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="app-header-logo">⚡ ASPEN <span>BRAIN</span></div>
+    <div class="header-right">
+      <span class="admin-badge">ADMIN</span>
+      <button class="btn-logout" id="logout-btn">Sign Out</button>
+    </div>
+  </header>
+
+  <div class="app-body">
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <ul class="sidebar-nav">
+        <li>
+          <button class="active" data-tab="settings">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-label">Settings</span>
+          </button>
+        </li>
+        <li>
+          <button data-tab="services">
+            <span class="nav-icon">🔧</span>
+            <span class="nav-label">Services</span>
+          </button>
+        </li>
+        <li>
+          <button data-tab="strategies">
+            <span class="nav-icon">📈</span>
+            <span class="nav-label">Strategies</span>
+          </button>
+        </li>
+        <li>
+          <button data-tab="estimate">
+            <span class="nav-icon">💰</span>
+            <span class="nav-label">Estimate</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main content -->
+    <main class="main-content">
+
+      <!-- ── SETTINGS TAB ─────────────────────────── -->
+      <section id="tab-settings" class="tab-panel active">
+        <div class="panel-header">
+          <h2>⚙️ Settings</h2>
+          <p>Configure your shop rate, fees, and company details.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🏢 Company Info</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="s-company-name">Company Name</label>
+              <input type="text" id="s-company-name" placeholder="Aspen Electrical Services">
+            </div>
+            <div class="form-group">
+              <label for="s-company-email">Company Email</label>
+              <input type="email" id="s-company-email" placeholder="contact@aspenelectric.com">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">💲 Pricing Defaults</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="s-shop-rate">Shop Rate ($/hr)</label>
+              <input type="number" id="s-shop-rate" min="0" step="1" placeholder="120">
+            </div>
+            <div class="form-group">
+              <label for="s-trip-fee">Trip Fee ($)</label>
+              <input type="number" id="s-trip-fee" min="0" step="1" placeholder="75">
+            </div>
+            <div class="form-group">
+              <label for="s-permit-fee">Permit Fee ($)</label>
+              <input type="number" id="s-permit-fee" min="0" step="1" placeholder="0">
+            </div>
+          </div>
+          <div class="save-btn-row">
+            <button class="btn btn-blue" id="save-settings-btn">💾 Save Settings</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── SERVICES TAB ─────────────────────────── -->
+      <section id="tab-services" class="tab-panel">
+        <div class="panel-header">
+          <h2>🔧 Services</h2>
+          <p>Manage your service bundles and at-cost pricing.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title">➕ Add New Service</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="svc-name">Service Name</label>
+              <input type="text" id="svc-name" placeholder="e.g. EV Charger Install">
+            </div>
+            <div class="form-group">
+              <label for="svc-category">Category</label>
+              <select id="svc-category">
+                <option value="Major">Major</option>
+                <option value="Small">Small</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="svc-at-cost">Material At-Cost ($)</label>
+              <input type="number" id="svc-at-cost" min="0" step="0.01" placeholder="450">
+            </div>
+            <div class="form-group">
+              <label for="svc-labor">Labor Hours</label>
+              <input type="number" id="svc-labor" min="0" step="0.25" placeholder="3">
+            </div>
+          </div>
+          <div class="save-btn-row">
+            <button class="btn btn-green" id="add-service-btn">➕ Add Service</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📋 Service Catalog</div>
+          <div class="services-table-wrap">
+            <table class="services-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Service Name</th>
+                  <th>Category</th>
+                  <th>At-Cost</th>
+                  <th>Labor (hrs)</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="services-tbody">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+          <div id="services-empty" class="empty-state hidden">
+            <div class="empty-icon">🔧</div>
+            <p>No services yet. Add your first service above.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── STRATEGIES TAB ────────────────────────── -->
+      <section id="tab-strategies" class="tab-panel">
+        <div class="panel-header">
+          <h2>📈 Pricing Strategies</h2>
+          <p>Set markup percentages for each pricing tier.</p>
+        </div>
+
+        <div class="strategies-grid">
+          <div class="strategy-card economy">
+            <div class="strategy-label">Tier 1</div>
+            <div class="strategy-name">Economy</div>
+            <div class="strategy-pct-group">
+              <input type="number" id="str-economy" min="1" max="200" step="1">
+              <span>%</span>
+            </div>
+            <div class="strategy-desc">Competitive pricing for budget-conscious clients.</div>
+          </div>
+
+          <div class="strategy-card standard">
+            <div class="strategy-label">Tier 2</div>
+            <div class="strategy-name">Standard</div>
+            <div class="strategy-pct-group">
+              <input type="number" id="str-standard" min="1" max="200" step="1">
+              <span>%</span>
+            </div>
+            <div class="strategy-desc">Balanced margin for most residential jobs.</div>
+          </div>
+
+          <div class="strategy-card premium">
+            <div class="strategy-label">Tier 3</div>
+            <div class="strategy-name">Premium</div>
+            <div class="strategy-pct-group">
+              <input type="number" id="str-premium" min="1" max="200" step="1">
+              <span>%</span>
+            </div>
+            <div class="strategy-desc">Full-service pricing for complex commercial work.</div>
+          </div>
+        </div>
+
+        <div class="save-btn-row mt-24">
+          <button class="btn btn-blue" id="save-strategies-btn">💾 Save Strategies</button>
+        </div>
+
+        <!-- Formula reference -->
+        <div class="card mt-24">
+          <div class="card-title">🧮 Pricing Formula</div>
+          <code style="background:var(--gray);display:block;padding:14px;border-radius:8px;font-size:0.88rem;color:var(--navy);">
+            Sell Price = (Material At-Cost × (1 + Markup% ÷ 100)) + (Labor Hours × Shop Rate) + Trip Fee + Permit Fee
+          </code>
+        </div>
+      </section>
+
+      <!-- ── ESTIMATE BUILDER TAB ───────────────────── -->
+      <section id="tab-estimate" class="tab-panel">
+        <div class="panel-header">
+          <h2>💰 Estimate Builder</h2>
+          <p>Select services, choose a strategy, and see real-time pricing.</p>
+        </div>
+
+        <div class="estimate-layout">
+          <!-- Left: service selector + strategy -->
+          <div>
+            <div class="card">
+              <div class="card-title">📈 Pricing Strategy</div>
+              <div class="strategy-picker">
+                <button class="strategy-pick-btn economy" data-strategy="economy">Economy</button>
+                <button class="strategy-pick-btn standard active" data-strategy="standard">Standard</button>
+                <button class="strategy-pick-btn premium" data-strategy="premium">Premium</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">🔧 Select Services</div>
+              <div class="service-select-list" id="service-select-list">
+                <!-- Populated by JS -->
+              </div>
+              <div id="service-select-empty" class="empty-state hidden">
+                <div class="empty-icon">🔧</div>
+                <p>No services found. Add services in the Services tab first.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: summary panel -->
+          <div class="estimate-summary">
+            <div class="card">
+              <div class="card-title">🧾 Estimate Summary</div>
+
+              <div class="view-toggle">
+                <button class="view-toggle-btn active" data-view="client">Client View</button>
+                <button class="view-toggle-btn" data-view="admin">At-Cost View</button>
+              </div>
+
+              <div id="estimate-breakdown">
+                <!-- Populated by JS -->
+              </div>
+
+              <div class="mt-16" style="display:flex;gap:10px;flex-wrap:wrap;">
+                <button class="btn btn-green btn-sm" id="copy-estimate-btn" style="flex:1">📋 Copy</button>
+                <button class="btn btn-navy btn-sm" id="clear-estimate-btn" style="flex:1">🗑️ Clear</button>
+              </div>
+
+              <div id="export-box-wrap" class="hidden">
+                <div class="export-box" id="export-box"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div><!-- /.app-body -->
+</div><!-- /#app -->
+
+<!-- ── EDIT SERVICE MODAL ──────────────────── -->
+<div class="modal-backdrop" id="edit-modal">
+  <div class="modal">
+    <div class="modal-title">✏️ Edit Service</div>
+    <input type="hidden" id="edit-svc-id">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="edit-svc-name">Service Name</label>
+        <input type="text" id="edit-svc-name">
+      </div>
+      <div class="form-group">
+        <label for="edit-svc-category">Category</label>
+        <select id="edit-svc-category">
+          <option value="Major">Major</option>
+          <option value="Small">Small</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="edit-svc-at-cost">Material At-Cost ($)</label>
+        <input type="number" id="edit-svc-at-cost" min="0" step="0.01">
+      </div>
+      <div class="form-group">
+        <label for="edit-svc-labor">Labor Hours</label>
+        <input type="number" id="edit-svc-labor" min="0" step="0.25">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-cancel btn-sm" id="edit-modal-cancel">Cancel</button>
+      <button class="btn btn-blue btn-sm" id="edit-modal-save">💾 Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ────────────────────────────────── -->
+<div id="toast">
+  <span id="toast-icon"></span>
+  <span id="toast-msg"></span>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>
