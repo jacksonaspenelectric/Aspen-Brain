@@ -40,11 +40,13 @@ const DEFAULT_DATA = {
 
 // ─── STATE ─────────────────────────────────────────────────────────────────────
 
-let appData = {};          // settings / strategies / services
+let appData = {};          // settings / strategies / services / takeoffs
 let selectedStrategy = 'standard';
 let currentView      = 'client';   // 'client' | 'admin'
 let selectedServices = {};         // { id: qty }
 let nextId           = 6;          // auto-increment for service IDs
+let takeoffStrategy  = 'standard';
+let nextTakeoffId    = 1;          // auto-increment for takeoff item IDs
 
 // ─── LOCAL STORAGE ─────────────────────────────────────────────────────────────
 
@@ -62,6 +64,12 @@ function loadData() {
     }
   } catch {
     appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }
+
+  // Ensure takeoffs array exists (for users upgrading from earlier versions)
+  if (!appData.takeoffs) appData.takeoffs = [];
+  if (appData.takeoffs.length > 0) {
+    nextTakeoffId = Math.max(...appData.takeoffs.map(t => t.id)) + 1;
   }
 }
 
@@ -116,6 +124,7 @@ function switchTab(tabName) {
   document.querySelector(`.sidebar-nav button[data-tab="${tabName}"]`).classList.add('active');
 
   if (tabName === 'estimate') renderServiceSelectList();
+  if (tabName === 'takeoffs') renderTakeoffTable();
 }
 
 // ─── SETTINGS ──────────────────────────────────────────────────────────────────
@@ -521,6 +530,185 @@ function clearEstimate() {
   document.getElementById('export-box-wrap').classList.add('hidden');
 }
 
+// ─── TAKEOFFS ──────────────────────────────────────────────────────────────────
+
+const EXPORT_LINE_WIDTH     = 56;
+const MAX_EXPORT_DESC_LEN   = 22;
+
+function renderTakeoffTable() {
+  const tbody   = document.getElementById('takeoff-tbody');
+  const emptyEl = document.getElementById('takeoff-empty');
+  const items   = appData.takeoffs;
+
+  if (!items || items.length === 0) {
+    tbody.innerHTML = '';
+    emptyEl.classList.remove('hidden');
+    recalcTakeoff();
+    return;
+  }
+
+  emptyEl.classList.add('hidden');
+
+  tbody.innerHTML = items.map((item, idx) => `
+    <tr>
+      <td>${idx + 1}</td>
+      <td><strong>${escapeHtml(item.name)}</strong></td>
+      <td>${escapeHtml(item.unit)}</td>
+      <td>${item.qty}</td>
+      <td>$${Number(item.unitCost).toFixed(2)}</td>
+      <td>$${(item.qty * item.unitCost).toFixed(2)}</td>
+      <td>${item.laborHrsPerUnit}</td>
+      <td>${(item.qty * item.laborHrsPerUnit).toFixed(2)}</td>
+      <td class="action-btns">
+        <button class="btn btn-red btn-sm" data-tid="${item.id}" data-action="delete-takeoff">🗑️</button>
+      </td>
+    </tr>
+  `).join('');
+
+  recalcTakeoff();
+}
+
+function addTakeoffItem() {
+  const name            = document.getElementById('to-name').value.trim();
+  const unit            = document.getElementById('to-unit').value.trim() || 'each';
+  const qty             = parseFloat(document.getElementById('to-qty').value);
+  const unitCost        = parseFloat(document.getElementById('to-unit-cost').value);
+  const laborHrsPerUnit = parseFloat(document.getElementById('to-labor').value) || 0;
+
+  if (!name) { showToast('Please enter an item description.', 'error'); return; }
+  if (isNaN(qty) || qty <= 0) { showToast('Please enter a valid quantity.', 'error'); return; }
+  if (isNaN(unitCost) || unitCost < 0) { showToast('Please enter a valid unit cost.', 'error'); return; }
+
+  appData.takeoffs.push({ id: nextTakeoffId++, name, unit, qty, unitCost, laborHrsPerUnit });
+  saveData();
+  renderTakeoffTable();
+  showToast('Item added!');
+
+  // Clear form
+  document.getElementById('to-name').value      = '';
+  document.getElementById('to-unit').value      = '';
+  document.getElementById('to-qty').value       = '';
+  document.getElementById('to-unit-cost').value = '';
+  document.getElementById('to-labor').value     = '';
+}
+
+function deleteTakeoffItem(id) {
+  appData.takeoffs = appData.takeoffs.filter(t => t.id !== id);
+  saveData();
+  renderTakeoffTable();
+  showToast('Item removed.');
+}
+
+function recalcTakeoff() {
+  const totalsEl = document.getElementById('takeoff-totals');
+  const items    = appData.takeoffs;
+
+  if (!items || items.length === 0) {
+    totalsEl.innerHTML = `
+      <div class="empty-state" style="padding:24px 0">
+        <div class="empty-icon">📐</div>
+        <p>Add items above to see your takeoff summary.</p>
+      </div>`;
+    return;
+  }
+
+  const { shopRate, tripFee, permitFee } = appData.settings;
+  const strategyPct   = appData.strategies[takeoffStrategy];
+  const markupMult    = 1 + (strategyPct / 100);
+
+  const totalMatCost   = items.reduce((s, t) => s + t.qty * t.unitCost, 0);
+  const totalLaborHrs  = items.reduce((s, t) => s + t.qty * t.laborHrsPerUnit, 0);
+  const totalLaborCost = totalLaborHrs * shopRate;
+  const matSell        = totalMatCost * markupMult;
+  const matMarkup      = totalMatCost * (strategyPct / 100);
+  const totalSell      = matSell + totalLaborCost + tripFee + permitFee;
+
+  totalsEl.innerHTML = `
+    <div class="summary-row"><span class="summary-label">Material At-Cost</span><span class="summary-value">$${totalMatCost.toFixed(2)}</span></div>
+    <div class="summary-row"><span class="summary-label">Total Labor Hours</span><span class="summary-value">${totalLaborHrs.toFixed(2)} hrs</span></div>
+    <div class="summary-row"><span class="summary-label">Labor Cost (@ $${shopRate}/hr)</span><span class="summary-value">$${totalLaborCost.toFixed(2)}</span></div>
+    <div class="summary-row"><span class="summary-label">Material Markup (${strategyPct}%)</span><span class="summary-value text-success">$${matMarkup.toFixed(2)}</span></div>
+    ${tripFee  > 0 ? `<div class="summary-row"><span class="summary-label">Trip Fee</span><span class="summary-value">$${tripFee.toFixed(2)}</span></div>`  : ''}
+    ${permitFee > 0 ? `<div class="summary-row"><span class="summary-label">Permit Fee</span><span class="summary-value">$${permitFee.toFixed(2)}</span></div>` : ''}
+    <div class="summary-row total"><span class="summary-label">TOTAL SELL</span><span class="summary-value">$${totalSell.toFixed(2)}</span></div>
+  `;
+}
+
+function buildTakeoffExportText() {
+  const { companyName, shopRate, tripFee, permitFee } = appData.settings;
+  const strategyPct = appData.strategies[takeoffStrategy];
+  const stratName   = takeoffStrategy.charAt(0).toUpperCase() + takeoffStrategy.slice(1);
+  const items       = appData.takeoffs;
+
+  const totalMatCost   = items.reduce((s, t) => s + t.qty * t.unitCost, 0);
+  const totalLaborHrs  = items.reduce((s, t) => s + t.qty * t.laborHrsPerUnit, 0);
+  const totalLaborCost = totalLaborHrs * shopRate;
+  const matMarkup      = totalMatCost * (strategyPct / 100);
+  let   totalSell      = totalMatCost * (1 + strategyPct / 100) + totalLaborCost;
+
+  const lines = [
+    `${companyName}`,
+    `Takeoff – ${stratName} Strategy (${strategyPct}% markup)`,
+    `Date: ${new Date().toLocaleDateString()}`,
+    '─'.repeat(EXPORT_LINE_WIDTH),
+    `Description             Qty    Unit   Mat.$     Hrs`,
+    '─'.repeat(EXPORT_LINE_WIDTH),
+  ];
+
+  items.forEach(item => {
+    const matCost  = (item.qty * item.unitCost).toFixed(2);
+    const laborHrs = (item.qty * item.laborHrsPerUnit).toFixed(2);
+    const desc = item.name.length > MAX_EXPORT_DESC_LEN ? item.name.slice(0, MAX_EXPORT_DESC_LEN) + '..' : item.name;
+    lines.push(
+      `${desc.padEnd(24)}${String(item.qty).padStart(5)}  ${item.unit.padEnd(7)}$${matCost.padStart(8)}  ${laborHrs.padStart(6)}`
+    );
+  });
+
+  lines.push('─'.repeat(EXPORT_LINE_WIDTH));
+  lines.push(`Material At-Cost:    $${totalMatCost.toFixed(2)}`);
+  lines.push(`Total Labor Hours:   ${totalLaborHrs.toFixed(2)} hrs`);
+  lines.push(`Labor Cost:          $${totalLaborCost.toFixed(2)}`);
+  lines.push(`Material Markup (${strategyPct}%): $${matMarkup.toFixed(2)}`);
+
+  if (tripFee   > 0) { lines.push(`Trip Fee:            $${tripFee.toFixed(2)}`);   totalSell += tripFee; }
+  if (permitFee > 0) { lines.push(`Permit Fee:          $${permitFee.toFixed(2)}`); totalSell += permitFee; }
+
+  lines.push('─'.repeat(EXPORT_LINE_WIDTH));
+  lines.push(`TOTAL SELL:          $${totalSell.toFixed(2)}`);
+
+  return lines.join('\n');
+}
+
+function copyTakeoff() {
+  if (!appData.takeoffs || appData.takeoffs.length === 0) {
+    showToast('No takeoff items to copy.', 'error');
+    return;
+  }
+
+  const text = buildTakeoffExportText();
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text)
+      .then(() => showToast('Takeoff copied to clipboard!'))
+      .catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+
+  const box  = document.getElementById('takeoff-export-box');
+  const wrap = document.getElementById('takeoff-export-wrap');
+  box.textContent = text;
+  wrap.classList.remove('hidden');
+}
+
+function clearTakeoff() {
+  appData.takeoffs = [];
+  saveData();
+  renderTakeoffTable();
+  document.getElementById('takeoff-export-wrap').classList.add('hidden');
+  showToast('Takeoff cleared.');
+}
+
 // ─── HELPERS ───────────────────────────────────────────────────────────────────
 
 function escapeHtml(str) {
@@ -635,4 +823,26 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Estimate: copy / clear ──
   document.getElementById('copy-estimate-btn').addEventListener('click', copyEstimate);
   document.getElementById('clear-estimate-btn').addEventListener('click', clearEstimate);
+
+  // ── Takeoffs ──
+  document.getElementById('add-takeoff-btn').addEventListener('click', addTakeoffItem);
+
+  document.getElementById('takeoff-tbody').addEventListener('click', e => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const id = parseInt(btn.dataset.tid, 10);
+    if (btn.dataset.action === 'delete-takeoff') deleteTakeoffItem(id);
+  });
+
+  document.querySelectorAll('.strategy-pick-btn[data-tstrategy]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.strategy-pick-btn[data-tstrategy]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      takeoffStrategy = btn.dataset.tstrategy;
+      recalcTakeoff();
+    });
+  });
+
+  document.getElementById('copy-takeoff-btn').addEventListener('click', copyTakeoff);
+  document.getElementById('clear-takeoff-btn').addEventListener('click', clearTakeoff);
 });

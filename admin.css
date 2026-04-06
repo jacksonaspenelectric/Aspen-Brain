@@ -864,6 +864,20 @@ body {
   overflow-y: auto;
 }
 
+/* ─── TAKEOFFS ───────────────────────────────────────────────── */
+.takeoff-pricing-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .takeoff-pricing-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ─── RESPONSIVE ─────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .estimate-layout {
