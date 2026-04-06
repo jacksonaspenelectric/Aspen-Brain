@@ -3,57 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aspen Brain - Electrical Estimating System</title>
+    <title>Aspen Electrical Services – Estimating & Field OS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>⚡ ASPEN BRAIN</h1>
-            <p>Advanced Electrical Estimating & Field OS</p>
+
+<!-- ══════════════════════════════════════════
+     NAVIGATION
+══════════════════════════════════════════ -->
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-logo">⚡ ASPEN <span>BRAIN</span></div>
+        <ul class="nav-links">
+            <li><a href="#services">Services</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="admin.html" class="nav-admin-btn">Admin Panel</a></li>
+        </ul>
+        <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">&#9776;</button>
+    </div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     HERO
+══════════════════════════════════════════ -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">⚡ Powered by Aspen Brain</div>
+        <h1>Professional Electrical <span>Estimating</span> Made Simple</h1>
+        <p>From quotation to invoice — one secure, local platform built for Aspen Electrical Services. Real-time pricing, admin control, and field-ready design.</p>
+        <div class="hero-btns">
+            <a href="admin.html" class="btn btn-primary">Open Admin Panel</a>
+            <a href="#services" class="btn btn-outline">View Services</a>
         </div>
-    </header>
-    
-    <section class="hero">
-        <h2>From Quotation to Invoice. One Platform.</h2>
-        <p>Streamlined electrical estimating with NEC compliance, admin pricing control, and NECA labor standards.</p>
-        <button onclick="window.location.href='admin.html'">Get Started</button>
-    </section>
+    </div>
+    <div class="hero-stats">
+        <div class="stat-card">
+            <div class="stat-value">3</div>
+            <div class="stat-label">Pricing Tiers</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">5+</div>
+            <div class="stat-label">Pre-loaded Services</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">100%</div>
+            <div class="stat-label">Local &amp; Offline</div>
+        </div>
+    </div>
+</section>
 
-    <section id="features" class="features">
-        <h2>Key Features</h2>
-        <div class="grid">
-            <div class="card">
-                <h3>📊 Master Materials Database</h3>
-                <p>150+ NEC-compliant electrical materials with 2026 verified pricing.</p>
+<!-- ══════════════════════════════════════════
+     SERVICES
+══════════════════════════════════════════ -->
+<section id="services" class="services-section">
+    <div class="section-container">
+        <div class="section-header">
+            <h2>Our Services</h2>
+            <p>Residential and commercial electrical solutions — pre-loaded with at-cost pricing ready for your admin panel.</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card major">
+                <div class="service-icon">🔌</div>
+                <div class="service-tag">Major</div>
+                <h3>EV Charger Install</h3>
+                <p>Level 2 home charging station installation, wiring, breaker, and permit coordination.</p>
+                <div class="service-meta">3 hrs labor · Major job</div>
             </div>
-            <div class="card">
-                <h3>⏱️ NECA Labor Standards</h3>
-                <p>Minute-per-task breakdown for residential & commercial work.</p>
+            <div class="service-card major">
+                <div class="service-icon">⚡</div>
+                <div class="service-tag">Major</div>
+                <h3>Panel Upgrade</h3>
+                <p>Upgrade from 100A to 150A or 200A service. Includes breakers, meter base, and inspection.</p>
+                <div class="service-meta">5 hrs labor · Major job</div>
             </div>
-            <div class="card">
-                <h3>🛡️ NEC Compliance Enforcement</h3>
-                <p>Blocks non-compliant items. Full audit trail included.</p>
+            <div class="service-card small">
+                <div class="service-icon">💡</div>
+                <div class="service-tag">Small</div>
+                <h3>Recessed Lighting</h3>
+                <p>LED can or retrofit recessed light installation, per fixture with wiring and dimmer option.</p>
+                <div class="service-meta">0.5 hrs labor · Per light</div>
             </div>
-            <div class="card">
-                <h3>💰 Admin Pricing Authority</h3>
-                <p>YOU control all costs and markups exclusively.</p>
+            <div class="service-card small">
+                <div class="service-icon">🔆</div>
+                <div class="service-tag">Small</div>
+                <h3>Smart Switch Install</h3>
+                <p>Install smart dimmer or switch with neutral wire check and app pairing included.</p>
+                <div class="service-meta">0.25 hrs labor · Per switch</div>
             </div>
-            <div class="card">
-                <h3>⚡ 3-Phase & Transformer Ready</h3>
-                <p>277/480V commercial support with service entrance kits.</p>
+            <div class="service-card small">
+                <div class="service-icon">🛡️</div>
+                <div class="service-tag">Small</div>
+                <h3>Surge Protector Install</h3>
+                <p>Whole-home surge protection device installed at panel. Includes warranty registration.</p>
+                <div class="service-meta">1 hr labor · Whole-home</div>
             </div>
-            <div class="card">
-                <h3>📍 Tulsa-Specific Compliance</h3>
-                <p>AEP, PSO, OG&E rules. Permit workflows. Local code mapping.</p>
+            <div class="service-card cta-card">
+                <div class="service-icon">➕</div>
+                <h3>Custom Service</h3>
+                <p>Need something else? Add any service with custom labor hours and at-cost pricing through your admin panel.</p>
+                <a href="admin.html" class="btn btn-primary btn-sm">Add in Admin</a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <footer>
-        <p>To access locally: <strong>http://192.168.1.100:8080</strong></p>
-    </footer>
+<!-- ══════════════════════════════════════════
+     FEATURES
+══════════════════════════════════════════ -->
+<section id="features" class="features-section">
+    <div class="section-container">
+        <div class="section-header">
+            <h2>Why Aspen Brain?</h2>
+            <p>Purpose-built for Aspen Electrical — works offline, no subscriptions, no cloud required.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon navy">🔐</div>
+                <h3>Secure Admin Panel</h3>
+                <p>Password-protected pricing control. Only you can edit costs, markups, and strategies.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon blue">📈</div>
+                <h3>3 Pricing Strategies</h3>
+                <p>Economy, Standard, and Premium tiers with adjustable markup percentages per job.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon green">💾</div>
+                <h3>Local Storage</h3>
+                <p>All data saved in your browser — works fully offline. No internet or server required.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon orange">⚡</div>
+                <h3>Real-Time Estimates</h3>
+                <p>Select services, pick a strategy, and get instant pricing — client view and at-cost view.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon navy">📋</div>
+                <h3>Service Catalog</h3>
+                <p>Pre-loaded with common electrical services. Add, edit, or remove anytime from the admin panel.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon blue">📱</div>
+                <h3>Field-Ready Design</h3>
+                <p>Large buttons (52px+), glove-friendly touch targets, responsive on phones, tablets, and desktops.</p>
+            </div>
+        </div>
+    </div>
+</section>
 
-    <script src="script.js"></script>
+<!-- ══════════════════════════════════════════
+     HOW IT WORKS
+══════════════════════════════════════════ -->
+<section class="how-section">
+    <div class="section-container">
+        <div class="section-header light">
+            <h2>How It Works</h2>
+            <p>Three steps from install to first estimate.</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-num">1</div>
+                <h3>Run Setup</h3>
+                <p>Execute <code>setup-aspen-brain.bat</code> once. It installs files, creates a <code>START-ASPEN-BRAIN</code> desktop shortcut, and launches the server.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">2</div>
+                <h3>Open Admin Panel</h3>
+                <p>Click the desktop icon or navigate to <code>/admin.html</code> and sign in with password <code>aspen2026</code> to configure pricing.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">3</div>
+                <h3>Build Estimates</h3>
+                <p>Select services, choose Economy / Standard / Premium, and share the client-facing total instantly.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     PRICING FORMULA
+══════════════════════════════════════════ -->
+<section class="formula-section">
+    <div class="section-container">
+        <div class="formula-card">
+            <div class="formula-label">Pricing Formula</div>
+            <div class="formula-text">
+                Sell Price = (Material Cost × Strategy Markup) + (Labor Hours × Shop Rate) + Trip Fee
+            </div>
+            <div class="formula-examples">
+                <div class="example">
+                    <div class="example-tier economy">Economy — 30%</div>
+                    <div class="example-calc">EV Charger: ($450 × 1.30) + (3h × $120) + $75 = <strong>$1,020</strong></div>
+                </div>
+                <div class="example">
+                    <div class="example-tier standard">Standard — 45%</div>
+                    <div class="example-calc">EV Charger: ($450 × 1.45) + (3h × $120) + $75 = <strong>$1,088</strong></div>
+                </div>
+                <div class="example">
+                    <div class="example-tier premium">Premium — 60%</div>
+                    <div class="example-calc">EV Charger: ($450 × 1.60) + (3h × $120) + $75 = <strong>$1,155</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     CONTACT
+══════════════════════════════════════════ -->
+<section id="contact" class="contact-section">
+    <div class="section-container">
+        <div class="section-header">
+            <h2>Contact Us</h2>
+            <p>Aspen Electrical Services — Tulsa, Oklahoma</p>
+        </div>
+        <div class="contact-grid">
+            <div class="contact-card">
+                <div class="contact-icon">📞</div>
+                <div class="contact-label">Phone</div>
+                <div class="contact-value">(918) 555-ASPEN</div>
+            </div>
+            <div class="contact-card">
+                <div class="contact-icon">✉️</div>
+                <div class="contact-label">Email</div>
+                <div class="contact-value">contact@aspenelectric.com</div>
+            </div>
+            <div class="contact-card">
+                <div class="contact-icon">📍</div>
+                <div class="contact-label">Service Area</div>
+                <div class="contact-value">Tulsa &amp; Surrounding Areas</div>
+            </div>
+        </div>
+        <div class="contact-cta">
+            <a href="admin.html" class="btn btn-primary btn-lg">Open Admin Panel →</a>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════ -->
+<footer class="site-footer">
+    <div class="footer-container">
+        <div class="footer-logo">⚡ ASPEN <span>BRAIN</span></div>
+        <div class="footer-links">
+            <a href="#services">Services</a>
+            <a href="#features">Features</a>
+            <a href="admin.html">Admin Panel</a>
+        </div>
+        <div class="footer-info">
+            <p>Running locally at <code>http://localhost:8080</code></p>
+            <p class="footer-copy">© 2026 Aspen Electrical Services. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
