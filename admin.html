@@ -67,6 +67,12 @@
             <span class="nav-label">Estimate</span>
           </button>
         </li>
+        <li>
+          <button data-tab="takeoffs">
+            <span class="nav-icon">📐</span>
+            <span class="nav-label">Takeoffs</span>
+          </button>
+        </li>
       </ul>
     </nav>
 
@@ -283,6 +289,101 @@
               <div id="export-box-wrap" class="hidden">
                 <div class="export-box" id="export-box"></div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── TAKEOFFS TAB ──────────────────────────────── -->
+      <section id="tab-takeoffs" class="tab-panel">
+        <div class="panel-header">
+          <h2>📐 Takeoffs</h2>
+          <p>Count materials and labor from blueprints to build accurate job estimates.</p>
+        </div>
+
+        <!-- Add Item Form -->
+        <div class="card">
+          <div class="card-title">➕ Add Item</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="to-name">Description</label>
+              <input type="text" id="to-name" placeholder="e.g. 12/2 Romex Wire">
+            </div>
+            <div class="form-group">
+              <label for="to-unit">Unit</label>
+              <input type="text" id="to-unit" placeholder="ft / each / box" maxlength="20">
+            </div>
+            <div class="form-group">
+              <label for="to-qty">Quantity</label>
+              <input type="number" id="to-qty" min="0.001" step="any" placeholder="100">
+            </div>
+            <div class="form-group">
+              <label for="to-unit-cost">Unit Cost ($)</label>
+              <input type="number" id="to-unit-cost" min="0" step="0.01" placeholder="0.85">
+            </div>
+            <div class="form-group">
+              <label for="to-labor">Labor (hrs / unit)</label>
+              <input type="number" id="to-labor" min="0" step="0.001" placeholder="0.01">
+            </div>
+          </div>
+          <div class="save-btn-row">
+            <button class="btn btn-green" id="add-takeoff-btn">➕ Add Item</button>
+          </div>
+        </div>
+
+        <!-- Items Table -->
+        <div class="card">
+          <div class="card-title">📋 Takeoff Items</div>
+          <div class="services-table-wrap">
+            <table class="services-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Description</th>
+                  <th>Unit</th>
+                  <th>Qty</th>
+                  <th>Unit Cost</th>
+                  <th>Mat. Total</th>
+                  <th>Hrs / Unit</th>
+                  <th>Total Hrs</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="takeoff-tbody">
+              </tbody>
+            </table>
+          </div>
+          <div id="takeoff-empty" class="empty-state hidden">
+            <div class="empty-icon">📐</div>
+            <p>No items yet. Add materials above to start your takeoff.</p>
+          </div>
+        </div>
+
+        <!-- Pricing Summary -->
+        <div class="takeoff-pricing-layout">
+          <div class="card">
+            <div class="card-title">📈 Pricing Strategy</div>
+            <div class="strategy-picker">
+              <button class="strategy-pick-btn economy" data-tstrategy="economy">Economy</button>
+              <button class="strategy-pick-btn standard active" data-tstrategy="standard">Standard</button>
+              <button class="strategy-pick-btn premium" data-tstrategy="premium">Premium</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">💵 Takeoff Summary</div>
+            <div id="takeoff-totals">
+              <div class="empty-state" style="padding:24px 0">
+                <div class="empty-icon">📐</div>
+                <p>Add items above to see your takeoff summary.</p>
+              </div>
+            </div>
+            <div class="mt-16" style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn btn-green btn-sm" id="copy-takeoff-btn" style="flex:1">📋 Copy</button>
+              <button class="btn btn-navy btn-sm" id="clear-takeoff-btn" style="flex:1">🗑️ Clear</button>
+            </div>
+            <div id="takeoff-export-wrap" class="hidden">
+              <div class="export-box" id="takeoff-export-box"></div>
             </div>
           </div>
         </div>
